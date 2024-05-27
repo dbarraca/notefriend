@@ -1,0 +1,29 @@
+.list-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .list {
+    width: 600px;
+    .notes {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      .list-item {
+        transition: height 0.2s;
+        overflow: hidden;
+        height: 40px;
+        &.completed {
+          height: 0;
+          opacity: 0.25;
+        }
+      }
+    }
+
+    &.show-completed {
+      .list-item.completed {
+        height: 40px;
+      }
+    }
+  }
+}
