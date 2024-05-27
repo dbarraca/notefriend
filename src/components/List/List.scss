@@ -5,6 +5,7 @@
   align-items: center;
   .list {
     width: 600px;
+    max-width: 90vw;
     .notes {
       display: flex;
       flex-direction: column;

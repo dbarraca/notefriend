@@ -43,9 +43,9 @@ const List = ({ noteList, email, title }) => {
   return (
     <div className="list-page">
       <div className={`list${showCompleted ? " show-completed" : ""}`}>
-        <h1>
+        <h1 className="title">
           {title}
-          <button onClick={toggleShowCompleted}>
+          <button className="button" onClick={toggleShowCompleted}>
             {showCompleted ? "Hide" : "Show"} Completed Notes
           </button>
         </h1>

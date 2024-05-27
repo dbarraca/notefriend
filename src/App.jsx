@@ -46,8 +46,8 @@ function App() {
         {mode === "list" && <List noteList={notes} title="list" email={email} />}
         {mode === "board" && <Board notes={notes} />}
         <div className="">
-          <button onClick={() => setMode("list")}>List</button>
-          <button onClick={() => setMode("board")}>Board</button>
+          <button className="button" onClick={() => setMode("list")}>List</button>
+          <button className="button"  onClick={() => setMode("board")}>Board</button>
         </div>
       </div>
     </div>
