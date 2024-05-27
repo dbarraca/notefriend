@@ -47,11 +47,11 @@ const ListItem = ({ email, noteData }) => {
       <input
         type="text"
         name="title"
-        // defaultValue={note.title}
-        value={note.title}
+        defaultValue={note.title}
+        // value={note.title}
         placeholder={note.title && note.title.length ? null : "New Note"}
-        // onBlur={(e) => handleTitleChange(e.target.value, note.id)}
-        onChange={(e) => handleTitleChange(e.target.value, note.id)}
+        onBlur={(e) => handleTitleChange(e.target.value, note.id)}
+        // onChange={(e) => handleTitleChange(e.target.value, note.id)}
       />
       {/* <textarea
         name="title"
