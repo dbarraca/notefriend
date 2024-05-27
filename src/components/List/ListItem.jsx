@@ -7,22 +7,17 @@ import {
   updateNoteTitle,
 } from "../../data/Note";
 import "./ListItem.scss";
-import { debounce } from "../../utils/debounce";
+import { debounce } from "../../utils/debounce.js";
 
-const ListItem = ({ email, noteData }) => {
+const ListItem = ({ noteData }) => {
   const [note, setNote] = useState(noteData);
 
   useEffect(() => {
     setNote(noteData);
   }, [noteData]);
 
-  const handleTitleChange = (title, id) => {
-    debounce(async () => {
-    const updatedNote = await updateNoteTitle(title, id, email);
-
-    }, 500);
-
-    console.log("updatedNote", updatedNote);
+  const handleTitleChange = async (title, id) => {
+    const updatedNote = await updateNoteTitle(id, title);
   };
 
   const toggleComplete = async () => {
@@ -50,7 +45,9 @@ const ListItem = ({ email, noteData }) => {
         defaultValue={note.title}
         // value={note.title}
         placeholder={note.title && note.title.length ? null : "New Note"}
-        onBlur={(e) => handleTitleChange(e.target.value, note.id)}
+        onBlur={(e) =>
+          debounce(handleTitleChange(e.target.value, note.id), 500)
+        }
         // onChange={(e) => handleTitleChange(e.target.value, note.id)}
       />
       {/* <textarea

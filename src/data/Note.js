@@ -10,7 +10,7 @@ export const fetchNote = async (id) => {
     console.log("error", error);
     return false;
   }
-  return fetchedNote;
+  return fetchedNote && fetchedNote[0];
 };
 
 // Fetch notes
@@ -18,6 +18,19 @@ export const fetchNotes = async () => {
   const { data: fetchedNotes, error } = await supabase
     .from("notes")
     .select("*");
+  if (error) {
+    console.log("error", error);
+    return false;
+  }
+  return fetchedNotes;
+};
+
+// Fetch notes
+export const fetchSubNotes = async (id) => {
+  const { data: fetchedNotes, error } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("parentId", id);
   if (error) {
     console.log("error", error);
     return false;
@@ -49,6 +62,27 @@ export const updateNoteTitle = async (id, title) => {
   return data;
 };
 
+export const showCompletedSubNotes = async (id) => {
+  return changeCompletedSubnoteVisibility(id, false);
+};
+
+export const hideCompletedSubNotes = async (id) => {
+  return changeCompletedSubnoteVisibility(id, true);
+};
+
+export const changeCompletedSubnoteVisibility = async (id, isHidden) => {
+  const { data, error } = await supabase
+    .from("notes")
+    .update({ hideCompletedSub: isHidden })
+    .eq("id", id)
+    .select();
+  if (error) {
+    console.log("error", error);
+    return false;
+  }
+  return data && data[0];
+};
+
 export const completeNote = async (id) => {
   const { data, error } = await supabase
     .from("notes")
@@ -76,7 +110,7 @@ export const uncompleteNote = async (id) => {
 };
 
 export const toggleCollapseNote = async (id, status) => {
-  console.log('collapseNote', id);
+  console.log("collapseNote", id);
   const { data, error } = await supabase
     .from("notes")
     .update({ collapsed: status })
@@ -90,13 +124,10 @@ export const toggleCollapseNote = async (id, status) => {
 };
 
 // Edit note body
-export const updateNoteBody = async (value, id) => {
-};
+export const updateNoteBody = async (value, id) => {};
 
 // Move note location in board
-export const moveNote = async (x, y, id) => {
-};
+export const moveNote = async (x, y, id) => {};
 
 // Delete note
-export const deleteNote = async (id) => {
-};
+export const deleteNote = async (id) => {};

@@ -13,7 +13,7 @@
       .list-item {
         transition: height 0.2s;
         overflow: hidden;
-        height: 40px;
+        height: 100%;
         &.completed {
           height: 0;
           opacity: 0.25;
@@ -23,7 +23,7 @@
 
     &.show-completed {
       .list-item.completed {
-        height: 40px;
+        height: 100%;
       }
     }
   }

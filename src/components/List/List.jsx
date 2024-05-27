@@ -1,22 +1,41 @@
 import { useEffect, useState } from "react";
 import ListItem from "./ListItem";
-import { addNote } from "../../data/Note";
+import {
+  addNote,
+  fetchNote,
+  fetchSubNotes,
+  hideCompletedSubNotes,
+  showCompletedSubNotes,
+} from "../../data/Note";
+import { debounce } from "../../utils/debounce.js";
 import "./List.scss";
 import "../Common/Colors.scss";
 
-const List = ({ noteList, email, title }) => {
-  const [notes, setNotes] = useState(noteList);
-  const [showCompleted, setShowCompleted] = useState(true);
+const List = ({ email, title }) => {
+  const [pageNoteId, setPageNoteId] = useState(1);
+  const [pageNote, setPageNote] = useState(null);
+  const [notes, setNotes] = useState([]);
+  // const [showCompleted, setShowCompleted] = useState(true);
 
   useEffect(() => {
-    setNotes(noteList);
-  }, [noteList]);
+    const getPageNote = async () => {
+      const fetchedPageNote = await fetchNote(pageNoteId);
+      if (fetchedPageNote) {
+        setPageNote(fetchedPageNote);
+      }
+    };
+    getPageNote();
+  },[pageNoteId]);
 
-  const noteElems =
-    noteList &&
-    notes.map((note, index) => {
-      return <ListItem noteData={note} key={index} email={email} />;
-    });
+  useEffect(() => {
+    const getNotes = async () => {
+      const fetchedNotes = await fetchSubNotes(pageNoteId);
+      if (fetchedNotes) {
+        setNotes(fetchedNotes);
+      }
+    };
+    getNotes();
+  }, [pageNote]);
 
   const handleAddClick = (e) => {
     e.preventDefault();
@@ -27,7 +46,7 @@ const List = ({ noteList, email, title }) => {
       color: "yellow",
       collapsed: false,
       completed: false,
-      parentId: 0,
+      parentId: 1,
       x: 100,
       y: 100,
       email,
@@ -37,21 +56,47 @@ const List = ({ noteList, email, title }) => {
   };
 
   const toggleShowCompleted = () => {
-    setShowCompleted((prev) => !prev);
+    debounce(
+      (async function () {
+        let updatedPageNote;
+        if (pageNote.hideCompletedSub) {
+          updatedPageNote = await showCompletedSubNotes(pageNoteId);
+        } else {
+          updatedPageNote = await hideCompletedSubNotes(pageNoteId);
+        }
+        // console.log("updatedPageNote", updatedPageNote);
+        setPageNote(updatedPageNote);
+      })(),
+      500
+    );
   };
+
+  const noteElems =
+    notes &&
+    notes
+      .sort((noteA, noteB) => noteA.id - noteB.id)
+      .map((note, index) => {
+        return <ListItem noteData={note} key={index} email={email} />;
+      });
 
   return (
     <div className="list-page">
-      <div className={`list${showCompleted ? " show-completed" : ""}`}>
-        <h1 className="title">
-          {title}
-          <button className="button" onClick={toggleShowCompleted}>
-            {showCompleted ? "Hide" : "Show"} Completed Notes
-          </button>
-        </h1>
-        <div className="notes">{noteElems}</div>
-        <button onClick={handleAddClick}>Add Note +</button>
-      </div>
+      {pageNote && (
+        <div
+          className={`list${
+            pageNote.hideCompletedSub ? "" : " show-completed"
+          }`}
+        >
+          <h1 className="title">
+            {pageNote.title}
+            <button className="button" onClick={toggleShowCompleted}>
+              {pageNote.hideCompletedSub ? "Show" : "Hide"} Completed Notes
+            </button>
+          </h1>
+          <div className="notes">{noteElems}</div>
+          <button onClick={handleAddClick}>Add Note +</button>
+        </div>
+      )}
     </div>
   );
 };
