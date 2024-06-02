@@ -4,13 +4,49 @@
       .list-item {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         justify-content: flex-start;
         width: 100%;
+        transition: height 0.2s;
+        position: relative;
+        // overflow: hidden;
+        // height: 100%;
+        &.dropping {
+          border-bottom: 2px solid rgba(0,0,0,.5);
+        }
+
+        .controls {
+          display: flex;
+          position: absolute;
+          right: 100%;
+        }
         .action {
           height: 50px;
           min-width: 5px;
         }
+        .drag {
+          margin: 0.8rem 0;
+          width: 1rem;
+          cursor: grab;
+        }
+        .checkbox {
+          margin: 0.9rem 0.5rem;
+        }
+        .drag,
+        .checkbox {
+          opacity: 0;
+        }
+        &:hover {
+          .drag,
+          .checkbox {
+            opacity: 1;
+          }
+        }
+        // &:hover {
+        //   .controls {
+        //     background-color: rgba(0, 0, 0, 0.2);
+        //   }
+        // }
         input {
           border: 1px solid transparent;
           background-color: transparent;
@@ -25,9 +61,29 @@
           &:focus {
             border-color: rgba(0, 0, 0, 0.25);
           }
-          &[type='checkbox'] {
+          &[type="checkbox"] {
             flex: 0;
           }
+        }
+        .item-title {
+          // padding: .8rem 1rem;
+          padding: 0.5rem;
+          border-radius: 0;
+          min-width: 1px;
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          border-radius: 0.2rem;
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+          }
+          &:focus-visible {
+            outline: none;
+          }
+        }
+        &.completed {
+          // height: 0;
+          opacity: 0.25;
         }
       }
     }

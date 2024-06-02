@@ -6,12 +6,13 @@ import {
   fetchSubNotes,
   hideCompletedSubNotes,
   showCompletedSubNotes,
+  reorderNotes
 } from "../../data/Note";
 import { debounce } from "../../utils/debounce.js";
 import "./List.scss";
 import "../Common/Colors.scss";
 
-const List = ({ email, title }) => {
+const List = ({ email, title, index }) => {
   const [pageNoteId, setPageNoteId] = useState(1);
   const [pageNote, setPageNote] = useState(null);
   const [notes, setNotes] = useState([]);
@@ -25,7 +26,7 @@ const List = ({ email, title }) => {
       }
     };
     getPageNote();
-  },[pageNoteId]);
+  }, [pageNoteId]);
 
   useEffect(() => {
     const getNotes = async () => {
@@ -71,13 +72,28 @@ const List = ({ email, title }) => {
     );
   };
 
+  const moveListItem = async (e, index) => {
+    e.preventDefault();
+    const noteIdToMove = e.dataTransfer.getData("noteIdToMove");
+    await reorderNotes(pageNoteId, noteIdToMove, index);
+  };
+
   const noteElems =
     notes &&
     notes
       .sort((noteA, noteB) => noteA.id - noteB.id)
       .map((note, index) => {
-        return <ListItem noteData={note} key={index} email={email} />;
+        return (
+          <ListItem
+            noteData={note.notes}
+            key={index}
+            email={email}
+            index={index}
+            moveListItem={moveListItem}
+          />
+        );
       });
+
 
   return (
     <div className="list-page">
@@ -93,7 +109,13 @@ const List = ({ email, title }) => {
               {pageNote.hideCompletedSub ? "Show" : "Hide"} Completed Notes
             </button>
           </h1>
-          <div className="notes">{noteElems}</div>
+          <div
+            className="notes"
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+          >
+            {noteElems}
+          </div>
           <button onClick={handleAddClick}>Add Note +</button>
         </div>
       )}

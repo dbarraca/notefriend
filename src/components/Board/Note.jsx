@@ -1,6 +1,6 @@
 import dragIcon from "../../img/drag32.png";
 import closeIcon from "../../img/close_icon.svg";
-import { deleteNote, moveNote, updateNoteTitle } from "../../data/Note";
+import { deleteNote, moveNote, updateTitle } from "../../data/Note";
 import NoteBody from "./NoteBody";
 
 const Note = ({ note, onDelete }) => {
@@ -37,7 +37,7 @@ const Note = ({ note, onDelete }) => {
           type="text"
           name="title"
           defaultValue={note.title}
-          onBlur={(e, id) => updateNoteTitle(e.target.value, note._id)}
+          onBlur={(e, id) => updateTitle(e.target.value, note._id)}
         />
 
         <img

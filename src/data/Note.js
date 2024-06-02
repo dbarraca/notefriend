@@ -25,12 +25,26 @@ export const fetchNotes = async () => {
   return fetchedNotes;
 };
 
-// Fetch notes
+// Fetch list's notes
+// export const fetchSubNotes = async (id) => {
+//   const { data: fetchedNotes, error } = await supabase
+//     .from("notes")
+//     .select("*")
+//     .eq("parentId", id);
+//   if (error) {
+//     console.log("error", error);
+//     return false;
+//   }
+//   return fetchedNotes;
+// };
+
+// Fetch list's notes
 export const fetchSubNotes = async (id) => {
   const { data: fetchedNotes, error } = await supabase
-    .from("notes")
-    .select("*")
-    .eq("parentId", id);
+    .from("list_note")
+    .select("notes!sub_note_id(id,title)")
+    .eq("parent_note_id", id)
+    .order("custom_sort", "created_at");
   if (error) {
     console.log("error", error);
     return false;
@@ -49,12 +63,31 @@ export const addNote = async (note) => {
 };
 
 // Title note
-export const updateNoteTitle = async (id, title) => {
+export const updateTitle = async (id, title) => {
   const { data, error } = await supabase
     .from("notes")
     .update({ title: title })
     .eq("id", id)
     .select();
+  if (error) {
+    console.log("error", error);
+    return false;
+  }
+  return data;
+};
+
+// Title note
+export const reorderNotes = async (
+  parentNoteId,
+  noteIdToMove,
+  indexToMoveTo
+) => {
+  const { data, error } = await supabase
+    .from("list_note")
+    .update({ custom_sort: indexToMoveTo })
+    .eq("parent_note_id", parentNoteId)
+    .select();
+  console.log("data", data);
   if (error) {
     console.log("error", error);
     return false;
