@@ -6,7 +6,7 @@ import {
   fetchSubNotes,
   hideCompletedSubNotes,
   showCompletedSubNotes,
-  reorderNotes
+  reorderNotes,
 } from "../../data/Note";
 import { debounce } from "../../utils/debounce.js";
 import "./List.scss";
@@ -32,7 +32,8 @@ const List = ({ email, title, index }) => {
     const getNotes = async () => {
       const fetchedNotes = await fetchSubNotes(pageNoteId);
       if (fetchedNotes) {
-        setNotes(fetchedNotes);
+        setNotes(fetchedNotes.map((note) => note.notes));
+        // setNotes(fetchedNotes);
       }
     };
     getNotes();
@@ -47,7 +48,7 @@ const List = ({ email, title, index }) => {
       color: "yellow",
       collapsed: false,
       completed: false,
-      parentId: 1,
+      parent_id: 1,
       x: 100,
       y: 100,
       email,
@@ -60,32 +61,63 @@ const List = ({ email, title, index }) => {
     debounce(
       (async function () {
         let updatedPageNote;
-        if (pageNote.hideCompletedSub) {
+        if (pageNote.hide_completed_sub) {
           updatedPageNote = await showCompletedSubNotes(pageNoteId);
         } else {
           updatedPageNote = await hideCompletedSubNotes(pageNoteId);
         }
-        // console.log("updatedPageNote", updatedPageNote);
         setPageNote(updatedPageNote);
       })(),
       500
     );
   };
 
-  const moveListItem = async (e, index) => {
+  const moveListItem = async (e, indexToMoveTo) => {
     e.preventDefault();
-    const noteIdToMove = e.dataTransfer.getData("noteIdToMove");
-    await reorderNotes(pageNoteId, noteIdToMove, index);
+    const noteIdToMove = parseInt(e.dataTransfer.getData("noteIdToMove"));
+    await reorderNotes(pageNoteId, noteIdToMove, indexToMoveTo);
+    setNotes((prev) => {
+      // console.log("prev", prev);
+      const noteToMove = prev.find(
+        (note) => note.id === parseInt(noteIdToMove)
+      );
+      const noteToMoveIndex = prev.findIndex(
+        (note) => note.id === parseInt(noteIdToMove)
+      );
+      // console.log("noteIdToMove", noteIdToMove);
+      // console.log("indexToMoveTo", indexToMoveTo);
+      // console.log("noteToMoveIndex", noteToMoveIndex);
+      // console.log("noteToMove", noteToMove);
+      let aboveMoved = [];
+      let belowMoved = [];
+      if (noteToMoveIndex < indexToMoveTo) {
+        aboveMoved =  prev.slice(0, indexToMoveTo + 1);
+        belowMoved =  prev.slice(indexToMoveTo + 1);
+        aboveMoved = aboveMoved.filter(note => note.id !== noteIdToMove);
+      }
+      else {
+        aboveMoved =  prev.slice(0, indexToMoveTo);
+        belowMoved =  prev.slice(indexToMoveTo);
+        belowMoved = belowMoved.filter(note => note.id !== noteIdToMove);
+      }
+      // console.log("aboveMoved", aboveMoved);
+      // console.log("belowMoved", belowMoved);
+      const reordered = [...aboveMoved, {moved: true,...noteToMove}, ...belowMoved];
+      // console.log("withoutToMove", withoutToMove);
+      // const reordered = withoutToMove.toSpliced(parseInt(indexToMoveTo) - 1, 0, noteToMove);
+      // console.log("reordered", reordered);
+      return reordered;
+    });
   };
 
   const noteElems =
     notes &&
     notes
-      .sort((noteA, noteB) => noteA.id - noteB.id)
+      // .sort((noteA, noteB) => noteA.id - noteB.id)
       .map((note, index) => {
         return (
           <ListItem
-            noteData={note.notes}
+            noteData={note}
             key={index}
             email={email}
             index={index}
@@ -94,25 +126,26 @@ const List = ({ email, title, index }) => {
         );
       });
 
+  console.log("pageNote", pageNote);
 
   return (
     <div className="list-page">
       {pageNote && (
         <div
           className={`list${
-            pageNote.hideCompletedSub ? "" : " show-completed"
+            pageNote.hide_completed_sub ? "" : " show-completed"
           }`}
         >
           <h1 className="title">
             {pageNote.title}
             <button className="button" onClick={toggleShowCompleted}>
-              {pageNote.hideCompletedSub ? "Show" : "Hide"} Completed Notes
+              {pageNote.hide_completed_sub ? "Show" : "Hide"} Completed Notes
             </button>
           </h1>
           <div
             className="notes"
-            contentEditable={true}
-            suppressContentEditableWarning={true}
+            // contentEditable={true}
+            // suppressContentEditableWarning={true}
           >
             {noteElems}
           </div>

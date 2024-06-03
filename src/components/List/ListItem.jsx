@@ -20,11 +20,13 @@ const ListItem = ({ index, noteData, moveListItem }) => {
   }, [noteData]);
 
   const handleTitleChange = async (e, id) => {
+    console.log("handleTitleChange");
     const title = e.target.innerHTML;
     await updateTitle(id, title);
   };
 
   const toggleComplete = async () => {
+    console.log("toggleComplete", note);
     let updatedNote = {};
     if (note.completed) {
       updatedNote = await uncompleteNote(note.id);
@@ -51,7 +53,7 @@ const ListItem = ({ index, noteData, moveListItem }) => {
       className={`list-item${note.completed ? " completed" : ""}${
         dropping ? " dropping" : ""
       }`}
-      draggable="true"
+      // draggable="true"
       onDrop={(e) => moveListItem(e, index)}
       onDragOver={(e) => allowDrop(e)}
       id={note.id}
@@ -62,8 +64,8 @@ const ListItem = ({ index, noteData, moveListItem }) => {
           className="drag"
           src={dragIcon}
           alt="Drag Icon"
-          onClick={() => moveNote(note.id)}
-          contentEditable={false}
+          onClick={() => moveNote(note)}
+          // contentEditable={false}
           onDragStart={(e) => drag(e, note.id)}
         />
         <input
@@ -80,7 +82,8 @@ const ListItem = ({ index, noteData, moveListItem }) => {
         contentEditable={true}
         suppressContentEditableWarning={true}
       >
-        <span dangerouslySetInnerHTML={{ __html: note.title }} />
+        {note.title}
+        {/* <span dangerouslySetInnerHTML={{ __html: note.title }} /> */}
       </div>
       {/* <input
         type="text"

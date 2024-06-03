@@ -30,7 +30,7 @@ export const fetchNotes = async () => {
 //   const { data: fetchedNotes, error } = await supabase
 //     .from("notes")
 //     .select("*")
-//     .eq("parentId", id);
+//     .eq("parent_id", id);
 //   if (error) {
 //     console.log("error", error);
 //     return false;
@@ -42,7 +42,7 @@ export const fetchNotes = async () => {
 export const fetchSubNotes = async (id) => {
   const { data: fetchedNotes, error } = await supabase
     .from("list_note")
-    .select("notes!sub_note_id(id,title)")
+    .select("notes!sub_note_id(id,title, completed, collapsed, body, hide_completed_sub)")
     .eq("parent_note_id", id)
     .order("custom_sort", "created_at");
   if (error) {
@@ -69,6 +69,7 @@ export const updateTitle = async (id, title) => {
     .update({ title: title })
     .eq("id", id)
     .select();
+  console.log("data", data);
   if (error) {
     console.log("error", error);
     return false;
@@ -82,12 +83,16 @@ export const reorderNotes = async (
   noteIdToMove,
   indexToMoveTo
 ) => {
-  const { data, error } = await supabase
-    .from("list_note")
-    .update({ custom_sort: indexToMoveTo })
-    .eq("parent_note_id", parentNoteId)
-    .select();
-  console.log("data", data);
+  const { data, error } = await supabase.rpc("reorder_custom_sorted_notes", {
+    parent_id: parentNoteId,
+    note_id_to_move: noteIdToMove,
+    index_to_move_to: indexToMoveTo,
+  });
+  // const { data, error } = await supabase
+  //   .from("list_note")
+  //   .update({ custom_sort: indexToMoveTo })
+  //   .eq("parent_note_id", parentNoteId)
+  //   .select();
   if (error) {
     console.log("error", error);
     return false;
@@ -106,7 +111,7 @@ export const hideCompletedSubNotes = async (id) => {
 export const changeCompletedSubnoteVisibility = async (id, isHidden) => {
   const { data, error } = await supabase
     .from("notes")
-    .update({ hideCompletedSub: isHidden })
+    .update({ hide_completed_sub: isHidden })
     .eq("id", id)
     .select();
   if (error) {
@@ -143,7 +148,6 @@ export const uncompleteNote = async (id) => {
 };
 
 export const toggleCollapseNote = async (id, status) => {
-  console.log("collapseNote", id);
   const { data, error } = await supabase
     .from("notes")
     .update({ collapsed: status })

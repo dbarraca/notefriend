@@ -6,7 +6,7 @@
       "color": "yellow",
       "x": 167,
       "y": 205,
-      "parentId": 0,
+      "parent_id": 0,
       "body": "<p>Hello World!</p><p>acsaasc</p><p>Some initial <strong>bold</strong> text</p>",
       "id": "7825"
     },
@@ -16,7 +16,7 @@
       "color": "blue",
       "x": 1053,
       "y": 237,
-      "parentId": 0,
+      "parent_id": 0,
       "body": "<p>Hello World!</p><p><br></p><p>Some initial <strong>bold</strong> text</p>",
       "id": "f159"
     },
@@ -26,7 +26,7 @@
       "color": "pink",
       "x": 845,
       "y": 540,
-      "parentId": 1,
+      "parent_id": 1,
       "body": "<p>Hello World!</p><p><br></p><p>Some initial <strong>bold</strong> texta</p><p>ascsacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaascasc</p>",
       "id": "5adb"
     },
@@ -35,7 +35,7 @@
       "title": "New Note",
       "body": "<p>HGsdv</p>",
       "color": "yellow",
-      "parentId": 0,
+      "parent_id": 0,
       "x": 638,
       "y": 429,
       "id": "821c"
@@ -45,7 +45,7 @@
       "title": "Make To Do Lists",
       "body": "<p><br></p>",
       "color": "yellow",
-      "parentId": 0,
+      "parent_id": 0,
       "x": 229,
       "y": 650,
       "id": "d7d5"
@@ -55,7 +55,7 @@
       "title": "Note here",
       "body": "<p><br></p>",
       "color": "yellow",
-      "parentId": 0,
+      "parent_id": 0,
       "x": 701,
       "y": 222,
       "id": "e4c4"

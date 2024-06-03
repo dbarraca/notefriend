@@ -42,12 +42,12 @@ const Board = ({}) => {
       title: "",
       body: "",
       color: "yellow",
-      parentID: 0,
+      // parent_id: 0,
       x: e.clientX,
       y: e.clientY,
     };
     addNote(newNote);
-    // addNote({parentID: 0,  x: e.clientX,  y: e.clientY });
+    // addNote({parent_id: 0,  x: e.clientX,  y: e.clientY });
   };
 
   const notesOnBoard =
