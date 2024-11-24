@@ -23,18 +23,29 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const email = session && session.user && session.user.email;
+  const signout = async () => {
+    const { error } = await supabase.auth.signOut();
+  };
+
+  const email = session?.user?.email;
+  const userId = session?.user?.id;
 
   return !session ? (
     <LoginPage />
   ) : (
     <div className="App">
+      <div>Signed In as: {email}</div>
+      <button onClick={signout}>Sign out</button>
       <div className="page">
-        {mode === "list" && <List title="list" email={email} />}
+        {mode === "list" && <List title="list" email={email} userId={userId} />}
         {mode === "board" && <Board />}
         <div className="">
-          <button className="button" onClick={() => setMode("list")}>List</button>
-          <button className="button"  onClick={() => setMode("board")}>Board</button>
+          <button className="button" onClick={() => setMode("list")}>
+            List
+          </button>
+          <button className="button" onClick={() => setMode("board")}>
+            Board
+          </button>
         </div>
       </div>
     </div>

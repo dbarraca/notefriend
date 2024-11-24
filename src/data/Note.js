@@ -13,6 +13,19 @@ export const fetchNote = async (id) => {
   return fetchedNote && fetchedNote[0];
 };
 
+// Fetch user's main note
+export const fetchMainNote = async (user_id) => {
+  const { data: fetchedNote, error } = await supabase
+    .from("user_main_note")
+    .select("*")
+    .eq("user_id", user_id);
+  if (error) {
+    console.log("error", error);
+    return false;
+  }
+  return fetchedNote && fetchedNote[0];
+};
+
 // Fetch notes
 export const fetchNotes = async () => {
   const { data: fetchedNotes, error } = await supabase
@@ -42,7 +55,9 @@ export const fetchNotes = async () => {
 export const fetchSubNotes = async (id) => {
   const { data: fetchedNotes, error } = await supabase
     .from("list_note")
-    .select("notes!sub_note_id(id,title, completed, collapsed, body, hide_completed_sub)")
+    .select(
+      "notes!sub_note_id(id,title, completed, collapsed, body, hide_completed_sub)"
+    )
     .eq("parent_note_id", id)
     .order("custom_sort", "created_at");
   if (error) {

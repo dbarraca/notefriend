@@ -20,13 +20,11 @@ const ListItem = ({ index, noteData, moveListItem }) => {
   }, [noteData]);
 
   const handleTitleChange = async (e, id) => {
-    console.log("handleTitleChange");
     const title = e.target.innerHTML;
     await updateTitle(id, title);
   };
 
   const toggleComplete = async () => {
-    console.log("toggleComplete", note);
     let updatedNote = {};
     if (note.completed) {
       updatedNote = await uncompleteNote(note.id);

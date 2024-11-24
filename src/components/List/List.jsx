@@ -3,6 +3,7 @@ import ListItem from "./ListItem";
 import {
   addNote,
   fetchNote,
+  fetchMainNote,
   fetchSubNotes,
   hideCompletedSubNotes,
   showCompletedSubNotes,
@@ -12,11 +13,20 @@ import { debounce } from "../../utils/debounce.js";
 import "./List.scss";
 import "../Common/Colors.scss";
 
-const List = ({ email, title, index }) => {
-  const [pageNoteId, setPageNoteId] = useState(1);
+const List = ({ email, title, index, userId }) => {
+  const [pageNoteId, setPageNoteId] = useState(0);
   const [pageNote, setPageNote] = useState(null);
   const [notes, setNotes] = useState([]);
-  // const [showCompleted, setShowCompleted] = useState(true);
+
+  useEffect(() => {
+    const getUserMainNote = async () => {
+      const fetchedMainNote = await fetchMainNote(userId);
+      if (fetchedMainNote?.note_id) {
+        setPageNoteId(fetchedMainNote?.note_id);
+      }
+    };
+    getUserMainNote();
+  }, []);
 
   useEffect(() => {
     const getPageNote = async () => {
@@ -100,12 +110,7 @@ const List = ({ email, title, index }) => {
         belowMoved =  prev.slice(indexToMoveTo);
         belowMoved = belowMoved.filter(note => note.id !== noteIdToMove);
       }
-      // console.log("aboveMoved", aboveMoved);
-      // console.log("belowMoved", belowMoved);
       const reordered = [...aboveMoved, {moved: true,...noteToMove}, ...belowMoved];
-      // console.log("withoutToMove", withoutToMove);
-      // const reordered = withoutToMove.toSpliced(parseInt(indexToMoveTo) - 1, 0, noteToMove);
-      // console.log("reordered", reordered);
       return reordered;
     });
   };
@@ -125,8 +130,6 @@ const List = ({ email, title, index }) => {
           />
         );
       });
-
-  console.log("pageNote", pageNote);
 
   return (
     <div className="list-page">
